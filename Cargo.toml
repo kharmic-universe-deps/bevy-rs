@@ -164,7 +164,6 @@ default = [
   "webgl2",
   "x11",
   "wayland",
-  "symphonia-all",
   "serialize",
   "async-io",
   "asset_processor",
@@ -577,7 +576,7 @@ nonmax = "0.5"
 smol = "2"
 smol-macros = "0.1"
 smol-hyper = "0.1"
-ureq = { version = "3.0.8", features = ["json"] }
+ureq = { git="ssh://git@github.com/kharmic-universe-deps/ureq-rs", branch = "ku-0.1.0", features = ["json"] }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen = { version = "0.2" }
