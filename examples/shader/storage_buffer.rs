@@ -76,20 +76,17 @@ fn update(
     let material = materials.get_mut(&material_handles.0).unwrap();
 
     let buffer = buffers.get_mut(&material.colors).unwrap();
-    buffer.set_data(
-        (0..5)
-            .map(|i| {
-                let t = time.elapsed_secs() * 5.0;
-                [
-                    ops::sin(t + i as f32) / 2.0 + 0.5,
-                    ops::sin(t + i as f32 + 2.0) / 2.0 + 0.5,
-                    ops::sin(t + i as f32 + 4.0) / 2.0 + 0.5,
-                    1.0,
-                ]
-            })
-            .collect::<Vec<[f32; 4]>>()
-            .as_slice(),
-    );
+    buffer.set_data((0..5)
+        .map(|i| {
+            let t = time.elapsed_secs() * 5.0;
+            [
+                ops::sin(t + i as f32) / 2.0 + 0.5,
+                ops::sin(t + i as f32 + 2.0) / 2.0 + 0.5,
+                ops::sin(t + i as f32 + 4.0) / 2.0 + 0.5,
+                1.0,
+            ]
+        })
+        .collect::<Vec<[f32; 4]>>());
 }
 
 // Holds handles to the custom materials

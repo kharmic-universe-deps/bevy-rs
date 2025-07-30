@@ -1,5 +1,6 @@
 //! Renders a lot of `Text2d`s
 
+use rand::prelude::IndexedRandom;
 use std::ops::RangeInclusive;
 
 use bevy::{
@@ -12,7 +13,7 @@ use bevy::{
 
 use argh::FromArgs;
 use rand::{
-    seq::{IteratorRandom, SliceRandom},
+    seq::{IteratorRandom},
     Rng, SeedableRng,
 };
 use rand_chacha::ChaCha8Rng;
@@ -122,10 +123,10 @@ fn setup(mut commands: Commands, font: Res<FontHandle>, args: Res<Args>) {
     for y in -half_y..half_y {
         for x in -half_x..half_x {
             let position = Vec2::new(x as f32, y as f32);
-            let translation = (position * tile_size).extend(rng.r#gen::<f32>());
-            let rotation = Quat::from_rotation_z(rng.r#gen::<f32>());
-            let scale = Vec3::splat(rng.r#gen::<f32>() * 2.0);
-            let color = Hsla::hsl(rng.gen_range(0.0..360.0), 0.8, 0.8);
+            let translation = (position * tile_size).extend(rng.r#random::<f32>());
+            let rotation = Quat::from_rotation_z(rng.r#random::<f32>());
+            let scale = Vec3::splat(rng.r#random::<f32>() * 2.0);
+            let color = Hsla::hsl(rng.random_range(0.0..360.0), 0.8, 0.8);
 
             text2ds.push((
                 Text2d(random_text(&mut rng, &args)),

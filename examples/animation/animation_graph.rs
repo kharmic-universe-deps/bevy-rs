@@ -185,7 +185,7 @@ fn setup_assets_programmatically(
                     Path::join(Path::new("assets"), Path::new(ANIMATION_GRAPH_PATH)),
                 ))
                 .expect("Failed to open the animation graph asset");
-                ron::ser::to_writer_pretty(
+                ron::Options::default().to_io_writer_pretty(
                     &mut animation_graph_writer,
                     &animation_graph,
                     PrettyConfig::default(),

@@ -6,7 +6,8 @@ use crate::{
 };
 use alloc::vec::Vec;
 use rand::Rng;
-use rand_distr::{Distribution, WeightedAliasIndex, WeightedError};
+use rand_distr::{Distribution};
+use rand_distr::weighted::WeightedAliasIndex;
 
 /// A [distribution] that caches data to allow fast sampling from a collection of triangles.
 /// Generally used through [`sample`] or [`sample_iter`].
@@ -19,7 +20,8 @@ use rand_distr::{Distribution, WeightedAliasIndex, WeightedError};
 /// ```
 /// # use bevy_math::{Vec3, primitives::*};
 /// # use bevy_math::sampling::mesh_sampling::UniformMeshSampler;
-/// # use rand::{SeedableRng, rngs::StdRng, distributions::Distribution};
+/// # use rand::{SeedableRng, rngs::StdRng};
+/// use rand::distr::Distribution;
 /// let faces = Tetrahedron::default().faces();
 /// let sampler = UniformMeshSampler::try_new(faces).unwrap();
 /// let rng = StdRng::seed_from_u64(8765309);
@@ -47,7 +49,7 @@ impl UniformMeshSampler {
     /// [triangles]: Triangle3d
     pub fn try_new<T: IntoIterator<Item = Triangle3d>>(
         triangles: T,
-    ) -> Result<Self, WeightedError> {
+    ) -> Result<Self, rand::distr::weighted::Error> {
         let triangles: Vec<Triangle3d> = triangles.into_iter().collect();
         let areas = triangles.iter().map(Measured2d::area).collect();
 

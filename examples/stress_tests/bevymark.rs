@@ -18,7 +18,8 @@ use bevy::{
     window::{PresentMode, WindowResolution},
     winit::{UpdateMode, WinitSettings},
 };
-use rand::{seq::SliceRandom, Rng, SeedableRng};
+use rand::{Rng, SeedableRng};
+use rand::prelude::IndexedRandom;
 use rand_chacha::ChaCha8Rng;
 
 const BIRDS_PER_SECOND: u32 = 10000;
@@ -345,7 +346,7 @@ fn mouse_handler(
     let rng = rng.as_mut().unwrap();
 
     if mouse_button_input.just_released(MouseButton::Left) {
-        counter.color = Color::linear_rgb(rng.r#gen(), rng.r#gen(), rng.r#gen());
+        counter.color = Color::linear_rgb(rng.r#random(), rng.r#random(), rng.r#random());
     }
 
     if mouse_button_input.pressed(MouseButton::Left) {
@@ -371,7 +372,7 @@ fn bird_velocity_transform(
     waves: Option<usize>,
     dt: f32,
 ) -> (Transform, Vec3) {
-    let mut velocity = Vec3::new(MAX_VELOCITY * (velocity_rng.r#gen::<f32>() - 0.5), 0., 0.);
+    let mut velocity = Vec3::new(MAX_VELOCITY * (velocity_rng.r#random::<f32>() - 0.5), 0., 0.);
 
     if let Some(waves) = waves {
         // Step the movement and handle collisions as if the wave had been spawned at fixed time intervals
@@ -414,7 +415,7 @@ fn spawn_birds(
                     let bird_z = if args.ordered_z {
                         (current_count + count) as f32 * 0.00001
                     } else {
-                        bird_resources.transform_rng.r#gen::<f32>()
+                        bird_resources.transform_rng.r#random::<f32>()
                     };
 
                     let (transform, velocity) = bird_velocity_transform(
@@ -427,9 +428,9 @@ fn spawn_birds(
 
                     let color = if args.vary_per_instance {
                         Color::linear_rgb(
-                            bird_resources.color_rng.r#gen(),
-                            bird_resources.color_rng.r#gen(),
-                            bird_resources.color_rng.r#gen(),
+                            bird_resources.color_rng.r#random(),
+                            bird_resources.color_rng.r#random(),
+                            bird_resources.color_rng.r#random(),
                         )
                     } else {
                         color
@@ -457,7 +458,7 @@ fn spawn_birds(
                     let bird_z = if args.ordered_z {
                         (current_count + count) as f32 * 0.00001
                     } else {
-                        bird_resources.transform_rng.r#gen::<f32>()
+                        bird_resources.transform_rng.r#random::<f32>()
                     };
 
                     let (transform, velocity) = bird_velocity_transform(
@@ -492,9 +493,9 @@ fn spawn_birds(
 
     counter.count += spawn_count;
     counter.color = Color::linear_rgb(
-        bird_resources.color_rng.r#gen(),
-        bird_resources.color_rng.r#gen(),
-        bird_resources.color_rng.r#gen(),
+        bird_resources.color_rng.r#random(),
+        bird_resources.color_rng.r#random(),
+        bird_resources.color_rng.r#random(),
     );
 }
 
@@ -575,7 +576,7 @@ fn init_textures(textures: &mut Vec<Handle<Image>>, args: &Args, images: &mut As
     // This isn't strictly required in practical use unless you need your app to be deterministic.
     let mut color_rng = ChaCha8Rng::seed_from_u64(42);
     while textures.len() < args.material_texture_count {
-        let pixel = [color_rng.r#gen(), color_rng.r#gen(), color_rng.r#gen(), 255];
+        let pixel = [color_rng.r#random(), color_rng.r#random(), color_rng.r#random(), 255];
         textures.push(images.add(Image::new_fill(
             Extent3d {
                 width: BIRD_TEXTURE_SIZE as u32,
@@ -623,7 +624,7 @@ fn init_materials(
     materials.extend(
         std::iter::repeat_with(|| {
             assets.add(ColorMaterial {
-                color: Color::srgb_u8(color_rng.r#gen(), color_rng.r#gen(), color_rng.r#gen()),
+                color: Color::srgb_u8(color_rng.r#random(), color_rng.r#random(), color_rng.r#random()),
                 texture: textures.choose(&mut texture_rng).cloned(),
                 alpha_mode,
                 ..default()

@@ -4,7 +4,7 @@ use core::{
     iter,
     ops::{Index, IndexMut, Range},
 };
-use std::io::{self, Write};
+use std::io::{self};
 
 use bevy_asset::{
     io::Reader, Asset, AssetEvent, AssetId, AssetLoader, AssetPath, Assets, Handle, LoadContext,
@@ -649,7 +649,7 @@ impl AnimationGraph {
     /// [`AnimationGraphAssetLoader`] to reconstruct the graph.
     pub fn save<W>(&self, writer: &mut W) -> Result<(), AnimationGraphLoadError>
     where
-        W: Write,
+        W: std::fmt::Write,
     {
         let mut ron_serializer = ron::ser::Serializer::new(writer, None)?;
         Ok(self.serialize(&mut ron_serializer)?)

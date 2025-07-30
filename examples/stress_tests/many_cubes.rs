@@ -25,7 +25,8 @@ use bevy::{
     window::{PresentMode, WindowResolution},
     winit::{UpdateMode, WinitSettings},
 };
-use rand::{seq::SliceRandom, Rng, SeedableRng};
+use rand::{Rng, SeedableRng};
+use rand::prelude::IndexedRandom;
 use rand_chacha::ChaCha8Rng;
 
 #[derive(FromArgs, Resource)]
@@ -262,7 +263,7 @@ fn init_textures(args: &Args, images: &mut Assets<Image>) -> Vec<Handle<Image>> 
     // This isn't strictly required in practical use unless you need your app to be deterministic.
     let mut color_rng = ChaCha8Rng::seed_from_u64(42);
     let color_bytes: Vec<u8> = (0..(args.material_texture_count * 4))
-        .map(|i| if (i % 4) == 3 { 255 } else { color_rng.r#gen() })
+        .map(|i| if (i % 4) == 3 { 255 } else { color_rng.r#random() })
         .collect();
     color_bytes
         .chunks(4)
@@ -311,7 +312,7 @@ fn init_materials(
     materials.extend(
         std::iter::repeat_with(|| {
             assets.add(StandardMaterial {
-                base_color: Color::srgb_u8(color_rng.r#gen(), color_rng.r#gen(), color_rng.r#gen()),
+                base_color: Color::srgb_u8(color_rng.r#random(), color_rng.r#random(), color_rng.r#random()),
                 base_color_texture: textures.choose(&mut texture_rng).cloned(),
                 ..default()
             })
@@ -330,7 +331,7 @@ fn init_meshes(args: &Args, assets: &mut Assets<Mesh>) -> Vec<(Handle<Mesh>, Tra
     let mut radius_rng = ChaCha8Rng::seed_from_u64(42);
     let mut variant = 0;
     std::iter::repeat_with(|| {
-        let radius = radius_rng.gen_range(0.25f32..=0.75f32);
+        let radius = radius_rng.random_range(0.25f32..=0.75f32);
         let (handle, transform) = match variant % 15 {
             0 => (
                 assets.add(Cuboid {

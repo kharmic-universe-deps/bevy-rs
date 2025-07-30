@@ -131,3 +131,6 @@ any contribution intentionally submitted for inclusion in the work by you,
 as defined in the Apache-2.0 license,
 shall be dual licensed as above,
 without any additional terms or conditions.
+
+### Testing
+clear ; cargo test --features default,bevy_dev_tools,bevy_reflect/petgraph,basis-universal,dds,exr,ff,gif,hdr,ico,jpeg,pnm,qoi,webp,zlib,flac,mp3

@@ -5,20 +5,20 @@
 //!
 //! For instance:
 //! ```
-//! # use rand::{random, Rng, SeedableRng, rngs::StdRng, distributions::Standard};
+//! # use rand::{random, Rng, SeedableRng, rngs::StdRng, distr::StandardUniform};
 //! # use bevy_math::{Dir3, sampling::FromRng};
 //! let mut rng = StdRng::seed_from_u64(7313429298);
 //! // Random direction using thread-local rng
 //! let random_direction1: Dir3 = random();
 //!
 //! // Random direction using the rng constructed above
-//! let random_direction2: Dir3 = rng.r#gen();
+//! let random_direction2: Dir3 = rng.r#random();
 //!
 //! // The same as the previous but with different syntax
 //! let random_direction3 = Dir3::from_rng(&mut rng);
 //!
 //! // Five random directions, using Standard explicitly
-//! let many_random_directions: Vec<Dir3> = rng.sample_iter(Standard).take(5).collect();
+//! let many_random_directions: Vec<Dir3> = rng.sample_iter(StandardUniform::default()).take(5).collect();
 //! ```
 
 use core::f32::consts::TAU;
@@ -28,7 +28,7 @@ use crate::{
     Dir2, Dir3, Dir3A, Quat, Rot2, ShapeSample, Vec3A,
 };
 use rand::{
-    distributions::{Distribution, Standard},
+    distr::{Distribution, StandardUniform},
     Rng,
 };
 
@@ -45,15 +45,15 @@ use rand::{
 pub trait FromRng
 where
     Self: Sized,
-    Standard: Distribution<Self>,
+    StandardUniform: Distribution<Self>,
 {
     /// Construct a value of this type uniformly at random using `rng` as the source of randomness.
     fn from_rng<R: Rng + ?Sized>(rng: &mut R) -> Self {
-        rng.r#gen()
+        rng.r#random()
     }
 }
 
-impl Distribution<Dir2> for Standard {
+impl Distribution<Dir2> for StandardUniform {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Dir2 {
         let circle = Circle::new(1.0);
@@ -64,7 +64,7 @@ impl Distribution<Dir2> for Standard {
 
 impl FromRng for Dir2 {}
 
-impl Distribution<Dir3> for Standard {
+impl Distribution<Dir3> for StandardUniform {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Dir3 {
         let sphere = Sphere::new(1.0);
@@ -75,7 +75,7 @@ impl Distribution<Dir3> for Standard {
 
 impl FromRng for Dir3 {}
 
-impl Distribution<Dir3A> for Standard {
+impl Distribution<Dir3A> for StandardUniform {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Dir3A {
         let sphere = Sphere::new(1.0);
@@ -86,10 +86,10 @@ impl Distribution<Dir3A> for Standard {
 
 impl FromRng for Dir3A {}
 
-impl Distribution<Rot2> for Standard {
+impl Distribution<Rot2> for StandardUniform {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Rot2 {
-        let angle = rng.gen_range(0.0..TAU);
+        let angle = rng.random_range(0.0..TAU);
         Rot2::radians(angle)
     }
 }
